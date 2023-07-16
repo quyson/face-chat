@@ -7,8 +7,8 @@ namespace facechat
     {
         public async Task SendMessage(string user, string message)
         {
-            Console.WriteLine(message);
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            var currentDate = DateTime.Now;
+            await Clients.Others.SendAsync("ReceiveMessage", user, message, currentDate);
         }
         public override async Task OnConnectedAsync()
         {

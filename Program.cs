@@ -36,7 +36,7 @@ app.MapControllers();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<ChatHub>("/chatHub");
-    endpoints.MapHub<SignalingHub>("/signalingHub");
+    endpoints.MapHub<WebRTC>("/webRTC");
 });
 
 app.Run();
