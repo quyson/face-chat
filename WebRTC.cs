@@ -11,7 +11,7 @@ namespace facechat
 
         public override Task OnConnectedAsync()
         {
-            ActiveConnections.TryAdd(Context.ConnectionId, "lol");
+            ActiveConnections.TryAdd(Context.ConnectionId, "");
             Console.WriteLine($"New Connection {Context.ConnectionId}");
             return base.OnConnectedAsync();
         }
@@ -19,6 +19,7 @@ namespace facechat
         public override Task OnDisconnectedAsync(Exception exception)
         {
             ActiveConnections.TryRemove(Context.ConnectionId, out _);
+            Console.WriteLine($"Removed: {Context.ConnectionId}");
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -27,33 +28,32 @@ namespace facechat
             return ActiveConnections.ContainsKey(connectionId);
         }
 
-        public async Task Offer(string connectionId, string sdpOffer)
+        public async Task Offer(string connectionId, string sdpOffer, string username)
         {
             Console.WriteLine(sdpOffer);
-            Console.WriteLine(connectionId);
+            Console.WriteLine(username);
 
             if (IsValidConnection(connectionId))
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveOffer", Context.ConnectionId, sdpOffer);
+                await Clients.Client(connectionId).SendAsync("ReceiveOffer", Context.ConnectionId, sdpOffer, username);
                 Console.WriteLine("sent");
             }
             else
             {
                 Console.WriteLine("Error!");
             }
-
-                
-            
         }
 
-        public async Task Answer(string connectionId, string sdpAnswer)
+        public async Task Answer(string connectionId, string sdpAnswer, string username)
         {
-            await Clients.Client(connectionId).SendAsync("ReceiveAnswer", Context.ConnectionId, sdpAnswer);
+            await Clients.Client(connectionId).SendAsync("ReceiveAnswer", Context.ConnectionId, sdpAnswer, username);
         }
 
-        public async Task IceCandidate(string connectionId, string candidate)
+        public async Task SendIceCandidate(string connectionId, string candidate)
         {
             await Clients.Client(connectionId).SendAsync("ReceiveIceCandidate", Context.ConnectionId, candidate);
         }
+
+       
     }
 }
